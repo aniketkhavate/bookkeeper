@@ -19,7 +19,7 @@ class ServiceController extends Controller
             $services = Service::where('is_active', 1)->get();
             return successResponse("Services fetched successfully.", $services);
         } catch (ValidationException $e) {
-            return errorResponse((string) $e->errors());
+            return errorResponse($e->getMessage(), $e->errors());
         }
     }
 
@@ -51,7 +51,7 @@ class ServiceController extends Controller
             $service->save();
             return successResponse('Service created successfully', $service);
         } catch (ValidationException $e) {
-            return errorResponse("Failed to store service");
+            return errorResponse($e->getMessage(), $e->errors());
         }
     }
 
@@ -94,7 +94,7 @@ class ServiceController extends Controller
             $service->update($request->only(['name', 'is_active']));
             return successResponse($service, 'Service updated successfully.');
         } catch (ValidationException $e) {
-            return errorResponse("Failed to update service.");
+            return errorResponse($e->getMessage(), $e->errors());
         }
     }
 
@@ -110,7 +110,7 @@ class ServiceController extends Controller
             $service->delete();
             return successResponse("Service deleted successfully");
         } catch (ValidationException $e) {
-            return errorResponse("Failed to delete service.");
+            return errorResponse($e->getMessage(), $e->errors());
         }
     }
 }

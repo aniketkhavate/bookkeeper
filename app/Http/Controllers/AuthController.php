@@ -28,7 +28,7 @@ class AuthController extends Controller
             ]);
             return successResponse('User saved successfully.', ['role' => $user->role]);
         } catch (ValidationException $e) {
-            return errorResponse("Failed to register.");
+            return errorResponse($e->getMessage(), $e->errors());
         }
     }
 
@@ -54,7 +54,7 @@ class AuthController extends Controller
                 ]
             );
         } catch (ValidationException $e) {
-            return errorResponse("Authentication Failed");
+            return errorResponse($e->getMessage(), $e->errors());
         }
     }
 
@@ -73,7 +73,7 @@ class AuthController extends Controller
                 ]
             );
         } catch (ValidationException $e) {
-            return errorResponse("Failed to load dashboard.");
+            return errorResponse($e->getMessage(), $e->errors());
         }
     }
 }
