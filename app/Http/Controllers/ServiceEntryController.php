@@ -37,7 +37,7 @@ class ServiceEntryController extends Controller
             $serviceEntry->load(['customer', 'service']);
             return successResponse('Service entry created successfully.', $serviceEntry);
         } catch (ValidationException $e) {
-            return errorResponse("Failed to save service entry.");
+            return errorResponse($e->getMessage(), $e->errors());
         }
     }
 
@@ -57,7 +57,7 @@ class ServiceEntryController extends Controller
             ]);
             return successResponse('Service entry updated successfully.', $serviceEntry);
         } catch (ValidationException $e) {
-            return errorResponse("Failed to update service entry.");
+            return errorResponse($e->getMessage(), $e->errors());
         }
     }
 
@@ -68,7 +68,7 @@ class ServiceEntryController extends Controller
             $serviceEntry->delete();
             return successResponse("Service entry deleted successfully");
         } catch (\Exception $e) {
-            return errorResponse("Failed to delete service entry.");
+            return errorResponse($e->getMessage());
         }
     }
 
@@ -83,7 +83,7 @@ class ServiceEntryController extends Controller
             ];
             return successResponse("Customer & Service List.", $data);
         } catch (\Exception $e) {
-            return errorResponse("fFailed to fetch details.");
+            return errorResponse($e->getMessage());
         }
     }
 }

@@ -49,7 +49,7 @@ class CustomerController extends Controller
             $customer = Customer::create($request->all());
             return successResponse('Customer created successfully.', $customer);
         } catch (ValidationException $e) {
-            return errorResponse("Failed to save customer details.");
+            return errorResponse($e->getMessage(), $e->errors());
         }
     }
 
@@ -85,7 +85,7 @@ class CustomerController extends Controller
             $customer->update($request->all());
             return successResponse('Customer updated successfully.', $customer);
         } catch (ValidationException $e) {
-            return errorResponse("Failed to update customer details.");
+            return errorResponse($e->getMessage(), $e->errors());
         }
     }
 
@@ -101,7 +101,7 @@ class CustomerController extends Controller
             $customer->delete();
             return successResponse('Customer deleted successfully.');
         } catch (\Exception $e) {
-            return errorResponse("Failed to delete customer details.");
+            return errorResponse($e->getMessage());
         }
     }
 }
