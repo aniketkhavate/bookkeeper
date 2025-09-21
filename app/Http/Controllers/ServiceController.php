@@ -17,9 +17,9 @@ class ServiceController extends Controller
     {
         try {
             $services = Service::where('is_active', 1)->get();
-            return response()->json($services);
+            return successResponse("Services fetched successfully.", $services);
         } catch (ValidationException $e) {
-            return response()->json(['status' => false, 'errors' => $e->errors()], 422);
+            return errorResponse((string) $e->errors());
         }
     }
 
@@ -49,9 +49,9 @@ class ServiceController extends Controller
                 'name' => $request->input('name'),
             ]);
             $service->save();
-            return response()->json(['status' => true, 'message' => 'Service created successfully', 'data' => $service], 201);
+            return successResponse('Service created successfully', $service);
         } catch (ValidationException $e) {
-            return response()->json(['status' => false, 'errors' => $e->errors()], 422);
+            return errorResponse("Failed to store service");
         }
     }
 
@@ -63,7 +63,7 @@ class ServiceController extends Controller
      */
     public function show(Service $service)
     {
-        return response()->json($service);
+        return successResponse("Service fetched successfully.", $service);
     }
 
     /**
@@ -92,9 +92,9 @@ class ServiceController extends Controller
                 'is_active' => 'sometimes|in:Y,N',
             ]);
             $service->update($request->only(['name', 'is_active']));
-            return response()->json(['status' => true, 'message' => 'Service updated successfully', 'data' => $service]);
+            return successResponse($service, 'Service updated successfully.');
         } catch (ValidationException $e) {
-            return response()->json(['status' => false, 'errors' => $e->errors()], 422);
+            return errorResponse("Failed to update service.");
         }
     }
 
@@ -108,15 +108,9 @@ class ServiceController extends Controller
     {
         try {
             $service->delete();
-            return response()->json([
-                'status' => true,
-                'message' => 'Service deleted successfully'
-            ], 200);
+            return successResponse("Service deleted successfully");
         } catch (ValidationException $e) {
-            return response()->json([
-                'status' => false,
-                'message' => $e->errors()
-            ], 200);
+            return errorResponse("Failed to delete service.");
         }
     }
 }

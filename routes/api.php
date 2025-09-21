@@ -23,6 +23,7 @@ Route::resource('blogs', BlogController::class);
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('auth:sanctum')->get('dashboard', [AuthController::class, 'dashboard']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -30,7 +31,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::middleware('auth:sanctum')->resource('service', ServiceController::class);
 Route::middleware('auth:sanctum')->resource('customer', CustomerController::class);
-Route::middleware('auth:sanctum')->get('dashboard', [AuthController::class, 'dashboard']);
 Route::middleware('auth:sanctum')->get('serviceEntry', [ServiceEntryController::class, 'index']);
 Route::middleware('auth:sanctum')->post('serviceEntry/store', [ServiceEntryController::class, 'store']);
 Route::middleware('auth:sanctum')->get('getRawData', [ServiceEntryController::class, 'getRawData']);

@@ -16,11 +16,7 @@ class CustomerController extends Controller
     public function index()
     {
         $customers = Customer::where('is_active', 1)->get();
-        return response()->json([
-            'status' => true,
-            'message' => 'Customer List',
-            "data" => $customers,
-        ], 200);
+        return successResponse('Customer List.', $customers);
     }
 
     /**
@@ -51,16 +47,9 @@ class CustomerController extends Controller
             ]);
             $request->merge(['created_by' => auth()->id()]);
             $customer = Customer::create($request->all());
-            return response()->json([
-                'status' => true,
-                'message' => 'Customer created successfully',
-                'data' => $customer
-            ], 200);
+            return successResponse('Customer created successfully.', $customer);
         } catch (ValidationException $e) {
-            return response()->json([
-                'status' => false,
-                'message' => $e->errors()
-            ], 200);
+            return errorResponse("Failed to save customer details.");
         }
     }
 
@@ -94,16 +83,9 @@ class CustomerController extends Controller
             ]);
             $request->merge(['created_by' => auth()->id()]);
             $customer->update($request->all());
-            return response()->json([
-                'status' => true,
-                'message' => 'Customer updated successfully',
-                'data' => $customer
-            ], 200);
+            return successResponse('Customer updated successfully.', $customer);
         } catch (ValidationException $e) {
-            return response()->json([
-                'status' => false,
-                'message' => $e->errors()
-            ], 200);
+            return errorResponse("Failed to update customer details.");
         }
     }
 
@@ -117,15 +99,9 @@ class CustomerController extends Controller
     {
         try {
             $customer->delete();
-            return response()->json([
-                'status' => true,
-                'message' => 'Customer deleted successfully'
-            ], 200);
+            return successResponse('Customer deleted successfully.');
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => $e->getMessage()
-            ], 200);
+            return errorResponse("Failed to delete customer details.");
         }
     }
 }

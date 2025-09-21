@@ -26,16 +26,9 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
                 'role' => $request->role,
             ]);
-            return response()->json([
-                'status' => true,
-                'message'   => 'User saved successfully!',
-                'role' => $user->role,
-            ], 200);
+            return successResponse('User saved successfully.', ['role' => $user->role]);
         } catch (ValidationException $e) {
-            return response()->json([
-                'status' => false,
-                'message' => $e->errors(),
-            ], 200);
+            return errorResponse("Failed to register.");
         }
     }
 
@@ -51,19 +44,17 @@ class AuthController extends Controller
                 return response()->json(['status' => false, 'message' => 'Authentication failed']);
             }
             $token = $user->createToken('auth_token')->plainTextToken;
-            return response()->json([
-                'status' => true,
-                'message'  => 'Logged-in successfully!',
-                'access_token' => $token,
-                'data' => $user,
-                'role' => $user->role,
-                'token_type' => 'Bearer'
-            ], 200);
+            return successResponse(
+                'Logged-in successfully!',
+                [
+                    'access_token' => $token,
+                    'user' => $user,
+                    'role' => $user->role,
+                    'token_type' => 'Bearer'
+                ]
+            );
         } catch (ValidationException $e) {
-            return response()->json([
-                'status' => false,
-                'message' => $e->errors(),
-            ], 200);
+            return errorResponse("Authentication Failed");
         }
     }
 
@@ -73,18 +64,16 @@ class AuthController extends Controller
             $customerCount = Customer::all()->count();
             $pendingServiceCount = ServiceEntry::where('status', 'pending')->with(['customer', 'service'])->get()->count();
             $allServiceCount = ServiceEntry::with(['customer', 'service'])->get()->count();
-            return response()->json([
-                'status' => true,
-                'message'   => 'Dashboard',
-                'customer_count' => $customerCount,
-                'pending_service_count' => $pendingServiceCount,
-                'all_service_count' => $allServiceCount,
-            ], 200);
+            return successResponse(
+                'Dashboard loaded successfully.',
+                [
+                    'customer_count' => $customerCount,
+                    'pending_service_count' => $pendingServiceCount,
+                    'all_service_count' => $allServiceCount,
+                ]
+            );
         } catch (ValidationException $e) {
-            return response()->json([
-                'status' => false,
-                'message' => $e->errors(),
-            ], 200);
+            return errorResponse("Failed to load dashboard.");
         }
     }
 }

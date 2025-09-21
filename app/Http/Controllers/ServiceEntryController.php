@@ -13,10 +13,7 @@ class ServiceEntryController extends Controller
     public function index()
     {
         $serviceEntries = ServiceEntry::with(['customer', 'service'])->get();
-        return response()->json([
-            'status' => true,
-            'data' => $serviceEntries
-        ], 200);
+        return successResponse("Service entries fetched successfully.", $serviceEntries);
     }
 
     public function store(Request $request)
@@ -38,19 +35,9 @@ class ServiceEntryController extends Controller
                 'total_bill' => $totalBill,
             ]);
             $serviceEntry->load(['customer', 'service']);
-            return response()->json(
-                [
-                    'status' => true,
-                    'message' => 'Service entry created successfully',
-                    'data' => $serviceEntry
-                ],
-                200
-            );
+            return successResponse('Service entry created successfully.', $serviceEntry);
         } catch (ValidationException $e) {
-            return response()->json([
-                'status' => false,
-                'message' => $e->errors()
-            ], 200);
+            return errorResponse("Failed to save service entry.");
         }
     }
 
@@ -68,16 +55,9 @@ class ServiceEntryController extends Controller
                 'quantity' => $request->quantity,
                 'total_bill' => $totalBill,
             ]);
-            return response()->json([
-                'status' => true,
-                'message' => 'Service entry updated successfully',
-                'data' => $serviceEntry
-            ], 200);
+            return successResponse('Service entry updated successfully.', $serviceEntry);
         } catch (ValidationException $e) {
-            return response()->json([
-                'status' => false,
-                'message' => $e->errors()
-            ], 200);
+            return errorResponse("Failed to update service entry.");
         }
     }
 
@@ -86,15 +66,9 @@ class ServiceEntryController extends Controller
         try {
             $serviceEntry = ServiceEntry::findOrFail($id);
             $serviceEntry->delete();
-            return response()->json([
-                'status' => true,
-                'message' => 'Service entry deleted successfully'
-            ], 200);
+            return successResponse("Service entry deleted successfully");
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => $e->getMessage()
-            ], 200);
+            return errorResponse("Failed to delete service entry.");
         }
     }
 
@@ -107,16 +81,9 @@ class ServiceEntryController extends Controller
                 'customers' => $customers,
                 'services' => $services,
             ];
-            return response()->json([
-                'status' => true,
-                'message' => 'Customer & Service List',
-                'data'  => $data,
-            ], 200);
+            return successResponse("Customer & Service List.", $data);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => $e->getMessage()
-            ], 200);
+            return errorResponse("fFailed to fetch details.");
         }
     }
 }

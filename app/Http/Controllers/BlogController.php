@@ -15,11 +15,7 @@ class BlogController extends Controller
     public function index()
     {
         $blogs = Blog::latest()->paginate(10);
-        return response()->json([
-            "status" => true,
-            "message"   =>  "Blogs",
-            "data" => $blogs
-        ], 200);
+        return successResponse("Blogs", $blogs);
     }
 
     /**
@@ -46,11 +42,7 @@ class BlogController extends Controller
         ]);
 
         $blog = Blog::create($request->all());
-        return response()->json([
-            "status" => true,
-            "message"   =>  "Blogs created successfully",
-            "data" => $blog
-        ], 200);
+        return successResponse("Blogs created successfully", $blog);
     }
 
     /**
@@ -61,11 +53,7 @@ class BlogController extends Controller
      */
     public function show(Blog $blog)
     {
-        return response()->json([
-            "status" => true,
-            "message"   =>  "View Blog",
-            "data" => $blog
-        ], 200);
+        return response("View Blog", $blog);
     }
 
     /**
@@ -94,12 +82,7 @@ class BlogController extends Controller
         ]);
 
         $blog->update($request->all());
-        return response()->json([
-            "status" => true,
-            "message"   =>  "Blogs updated successfully",
-            "data" => $blog,
-            "msg" => "Blog updated successfully"
-        ], 200);
+        return successResponse("Blogs updated successfully", $blog);
     }
 
     /**
@@ -111,11 +94,6 @@ class BlogController extends Controller
     public function destroy(Blog $blog)
     {
         $blog->delete();
-        return response()->json([
-            "status" => true,
-            "message"   =>  "Blogs deleted successfully",
-            "data" => $blog,
-            "msg" => "Blog deleted successfully"
-        ], 200);
+        return successResponse("Blogs deleted successfully", $blog);
     }
 }
