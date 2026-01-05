@@ -43,7 +43,7 @@ class ServiceController extends Controller
     {
         try {
             $request->validate([
-                'name' => 'required|string|max:255',
+                'name' => 'required|string|max:255|unique:services,name',
             ]);
             $service = new Service([
                 'name' => $request->input('name'),
@@ -51,7 +51,8 @@ class ServiceController extends Controller
             $service->save();
             return successResponse('Service created successfully', $service);
         } catch (ValidationException $e) {
-            return errorResponse($e->getMessage(), $e->errors());
+            $firstError = collect($e->errors())->first()[0];
+            return errorResponse($firstError, $e->errors());
         }
     }
 

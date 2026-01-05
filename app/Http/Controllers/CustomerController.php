@@ -41,7 +41,7 @@ class CustomerController extends Controller
             $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:customers,email',
-                'phone' => 'required|string|max:15',
+                'phone' => 'required|string|max:15|unique:customers,phone',
                 'address' => 'nullable|string',
                 'branch' => 'nullable|string|max:255',
             ]);
@@ -49,7 +49,8 @@ class CustomerController extends Controller
             $customer = Customer::create($request->all());
             return successResponse('Customer created successfully.', $customer);
         } catch (ValidationException $e) {
-            return errorResponse($e->getMessage(), $e->errors());
+            $firstError = collect($e->errors())->first()[0];
+            return errorResponse($firstError, $e->errors());
         }
     }
 
