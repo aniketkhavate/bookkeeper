@@ -33,6 +33,9 @@ Route::middleware('auth:sanctum')->resource('service', ServiceController::class)
 Route::middleware('auth:sanctum')->resource('customer', CustomerController::class);
 Route::middleware('auth:sanctum')->get('serviceEntry', [ServiceEntryController::class, 'index']);
 Route::middleware('auth:sanctum')->post('serviceEntry/store', [ServiceEntryController::class, 'store']);
+Route::middleware('auth:sanctum')->put('serviceEntry/update/{id}', [ServiceEntryController::class, 'update']);
+Route::middleware('auth:sanctum')->delete('serviceEntry/delete/{id}', [ServiceEntryController::class, 'destroy']);
+
 Route::middleware('auth:sanctum')->get('getRawData', [ServiceEntryController::class, 'getRawData']);
 // Reports
 // Route::get('reports/daily', [ServiceEntryController::class, 'dailyWorkReport']);

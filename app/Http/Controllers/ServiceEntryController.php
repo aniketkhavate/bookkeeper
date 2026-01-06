@@ -23,8 +23,7 @@ class ServiceEntryController extends Controller
                 'customer_id' => 'required|exists:customers,id',
                 'service_id' => 'required|exists:services,id',
                 'rate' => 'required|numeric',
-                'quantity' => 'required|integer',
-                'total_bill' => 'required',
+                'quantity' => 'required|integer'
             ]);
             $totalBill = $request->rate * $request->quantity;
             $serviceEntry = ServiceEntry::create([
@@ -37,7 +36,10 @@ class ServiceEntryController extends Controller
             $serviceEntry->load(['customer', 'service']);
             return successResponse('Service entry created successfully.', $serviceEntry);
         } catch (ValidationException $e) {
-            return errorResponse($e->getMessage(), $e->errors());
+            $firstError = collect($e->errors())->first()[0];
+            return errorResponse($firstError, $e->errors());
+        } catch (\Exception $e) {
+            return errorResponse($e->getMessage());
         }
     }
 
@@ -45,19 +47,30 @@ class ServiceEntryController extends Controller
     {
         try {
             $request->validate([
+                'customer_id' => 'required|exists:customers,id',
+                'service_id' => 'required|exists:services,id',
                 'rate' => 'required|numeric',
                 'quantity' => 'required|integer',
+                'status' => 'required|in:pending,in-progress,completed'
             ]);
             $serviceEntry = ServiceEntry::findOrFail($id);
             $totalBill = $request->rate * $request->quantity;
-            $serviceEntry->update([
-                'rate' => $request->rate,
-                'quantity' => $request->quantity,
-                'total_bill' => $totalBill,
-            ]);
+            $serviceEntry->update(
+                [
+                    'customer_id' => $request->customer_id,
+                    'service_id' => $request->service_id,
+                    'rate' => $request->rate,
+                    'quantity' => $request->quantity,
+                    'total_bill' => $totalBill,
+                    'status' => $request->status
+                ]
+            );
             return successResponse('Service entry updated successfully.', $serviceEntry);
         } catch (ValidationException $e) {
-            return errorResponse($e->getMessage(), $e->errors());
+            $firstError = collect($e->errors())->first()[0];
+            return errorResponse($firstError, $e->errors());
+        } catch (\Exception $e) {
+            return errorResponse($e->getMessage());
         }
     }
 
@@ -77,9 +90,11 @@ class ServiceEntryController extends Controller
         try {
             $services = Service::where('is_active', 1)->get();
             $customers = Customer::where('is_active', 1)->get();
+            $serviceEntries = ServiceEntry::with(['customer', 'service'])->get();
             $data = [
                 'customers' => $customers,
                 'services' => $services,
+                'serviceEntries' => $serviceEntries
             ];
             return successResponse("Customer & Service List.", $data);
         } catch (\Exception $e) {

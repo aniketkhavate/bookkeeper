@@ -51,6 +51,8 @@ class CustomerController extends Controller
         } catch (ValidationException $e) {
             $firstError = collect($e->errors())->first()[0];
             return errorResponse($firstError, $e->errors());
+        } catch (\Exception $e) {
+            return errorResponse($e->getMessage());
         }
     }
 
@@ -86,7 +88,10 @@ class CustomerController extends Controller
             $customer->update($request->all());
             return successResponse('Customer updated successfully.', $customer);
         } catch (ValidationException $e) {
-            return errorResponse($e->getMessage(), $e->errors());
+            $firstError = collect($e->errors())->first()[0];
+            return errorResponse($firstError, $e->errors());
+        } catch (\Exception $e) {
+            return errorResponse($e->getMessage());
         }
     }
 
