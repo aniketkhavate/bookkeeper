@@ -6,6 +6,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ServiceEntryController;
 
 /*
@@ -37,6 +38,7 @@ Route::middleware('auth:sanctum')->put('serviceEntry/update/{id}', [ServiceEntry
 Route::middleware('auth:sanctum')->delete('serviceEntry/delete/{id}', [ServiceEntryController::class, 'destroy']);
 
 Route::middleware('auth:sanctum')->get('getRawData', [ServiceEntryController::class, 'getRawData']);
+Route::middleware('auth:sanctum')->get('dashboard', [DashboardController::class, 'index']);
 // Reports
 // Route::get('reports/daily', [ServiceEntryController::class, 'dailyWorkReport']);
 // Route::get('reports/monthly/{month}/{year}', [ServiceEntryController::class, 'monthWiseWorkReport']);
