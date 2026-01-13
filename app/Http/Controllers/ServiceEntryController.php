@@ -21,13 +21,13 @@ class ServiceEntryController extends Controller
     {
         $request->validate([
             'id' => 'nullable',
-            'customer_id' => 'nullable|exists:customers,id'
+            'customer_id' => 'nullable|integer|min:0'
         ]);
         $where = [];
-        if (isset($request->id)) {
+        if ($request->filled('id')) {
             $where['id'] = $request->id;
         }
-        if (isset($request->customer_id)) {
+        if ($request->filled('customer_id') && $request->customer_id != 0) {
             $where['customer_id'] = $request->customer_id;
         }
         $serviceEntries = $this->serviceEntryModel->getServiceEntries($where);
