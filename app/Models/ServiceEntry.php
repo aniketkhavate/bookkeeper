@@ -27,4 +27,9 @@ class ServiceEntry extends Model
     {
         return $this->belongsTo(Service::class);
     }
+
+    public function getServiceEntries(array $where = [])
+    {
+        return ServiceEntry::with(['customer', 'service'])->where($where)->get();
+    }
 }

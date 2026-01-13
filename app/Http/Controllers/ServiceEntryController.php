@@ -10,9 +10,27 @@ use Illuminate\Validation\ValidationException;
 
 class ServiceEntryController extends Controller
 {
-    public function index()
+    private $serviceEntryModel;
+
+    public function __construct()
     {
-        $serviceEntries = ServiceEntry::with(['customer', 'service'])->get();
+        $this->serviceEntryModel = new ServiceEntry();
+    }
+
+    public function index(Request $request)
+    {
+        $request->validate([
+            'id' => 'nullable',
+            'customer_id' => 'nullable|exists:customers,id'
+        ]);
+        $where = [];
+        if (isset($request->id)) {
+            $where['id'] = $request->id;
+        }
+        if (isset($request->customer_id)) {
+            $where['customer_id'] = $request->customer_id;
+        }
+        $serviceEntries = $this->serviceEntryModel->getServiceEntries($where);
         return successResponse("Service entries fetched successfully.", $serviceEntries);
     }
 
