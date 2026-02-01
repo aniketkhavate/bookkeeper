@@ -32,7 +32,7 @@ class ServiceEntry extends Model
 
     public function getServiceEntries(array $where = [])
     {
-        return ServiceEntry::with(['customer:id,name,email,phone', 'service:id,name'])->where($where)->orderBy('id', 'desc')->get();
+        return ServiceEntry::with(['customer:id,name,email,phone', 'service:id,name', 'user:id,name'])->where($where)->orderBy('id', 'desc')->get();
     }
 
     public function user()
