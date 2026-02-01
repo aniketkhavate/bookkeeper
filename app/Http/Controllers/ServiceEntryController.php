@@ -49,6 +49,7 @@ class ServiceEntryController extends Controller
             $request->validate([
                 'customer_id' => 'required|exists:customers,id',
                 'service_id' => 'required|exists:services,id',
+                'description' => 'required|string',
                 'rate' => 'required|numeric',
                 'quantity' => 'required|integer'
             ]);
@@ -56,6 +57,7 @@ class ServiceEntryController extends Controller
             $serviceEntry = ServiceEntry::create([
                 'customer_id' => $request->customer_id,
                 'service_id' => $request->service_id,
+                'description' => $request->description,
                 'user_id' => auth()->id(),
                 'rate' => $request->rate,
                 'quantity' => $request->quantity,
@@ -77,6 +79,7 @@ class ServiceEntryController extends Controller
             $request->validate([
                 'customer_id' => 'required|exists:customers,id',
                 'service_id' => 'required|exists:services,id',
+                'description' => 'required|string',
                 'rate' => 'required|numeric',
                 'quantity' => 'required|integer',
                 'status' => 'required|in:pending,in-progress,completed'
@@ -87,6 +90,7 @@ class ServiceEntryController extends Controller
                 [
                     'customer_id' => $request->customer_id,
                     'service_id' => $request->service_id,
+                    'description' => $request->description,
                     'rate' => $request->rate,
                     'quantity' => $request->quantity,
                     'total_bill' => $totalBill,

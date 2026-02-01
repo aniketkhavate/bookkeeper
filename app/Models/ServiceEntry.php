@@ -13,6 +13,7 @@ class ServiceEntry extends Model
         'customer_id',
         'service_id',
         'user_id',
+        'description',
         'rate',
         'quantity',
         'total_bill',
