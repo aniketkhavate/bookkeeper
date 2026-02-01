@@ -26,10 +26,10 @@ class ServiceEntryController extends Controller
         ]);
 
         $where = [];
-        $user = auth()->user();
-        if ($user->isEmployee()) {
-            $where['user_id'] = $user->id;
-        }
+        // $user = auth()->user();
+        // if ($user->isEmployee()) {
+        //     $where['user_id'] = $user->id;
+        // }
         if ($request->filled('id')) {
             $where['id'] = $request->id;
         }

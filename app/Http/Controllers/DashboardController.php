@@ -16,7 +16,8 @@ class DashboardController extends Controller
         try {
             $user = auth()->user();
 
-            if ($user->isAdmin()) {
+            // if ($user->isAdmin()) {
+            if (true) {
                 // Admin sees everything
                 $total_customers = Customer::where('is_active', 1)->count();
                 $total_services  = Service::where('is_active', 1)->count();

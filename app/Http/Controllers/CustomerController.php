@@ -17,7 +17,8 @@ class CustomerController extends Controller
     {
         $user = auth()->user(); // get logged-in user
 
-        if ($user->isAdmin()) {
+        // if ($user->isAdmin()) {
+        if (true) {
             // Admin sees all customers
             $customers = Customer::with('creator:id,name')->where('is_active', 1)->orderBy('id', 'desc')->get();
         } else if ($user->isEmployee()) {
