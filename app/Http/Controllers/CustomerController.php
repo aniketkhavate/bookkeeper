@@ -15,7 +15,21 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customers = Customer::where('is_active', 1)->get();
+        $user = auth()->user(); // get logged-in user
+
+        if ($user->isAdmin()) {
+            // Admin sees all customers
+            $customers = Customer::with('creator:id,name')->where('is_active', 1)->orderBy('id', 'desc')->get();
+        } else if ($user->isEmployee()) {
+            // Employee sees only the customers they created
+            $customers = Customer::with('creator:id,name')->where('is_active', 1)
+                ->where('created_by', $user->id)
+                ->orderBy('id', 'desc')
+                ->get();
+        } else {
+            return errorResponse('Access denied.', [], 403);
+        }
+
         return successResponse('Customer List.', $customers);
     }
 

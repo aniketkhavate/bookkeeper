@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ServiceEntryController;
 
 /*
@@ -39,11 +40,9 @@ Route::middleware('auth:sanctum')->delete('serviceEntry/delete/{id}', [ServiceEn
 
 Route::middleware('auth:sanctum')->get('getRawData', [ServiceEntryController::class, 'getRawData']);
 Route::middleware('auth:sanctum')->get('dashboard', [DashboardController::class, 'index']);
-// Reports
-// Route::get('reports/daily', [ServiceEntryController::class, 'dailyWorkReport']);
-// Route::get('reports/monthly/{month}/{year}', [ServiceEntryController::class, 'monthWiseWorkReport']);
-// Route::get('reports/yearly/{year}', [ServiceEntryController::class, 'yearWiseWorkReport']);
-// Route::get('reports/customer/daily/{customerId}', [ServiceEntryController::class, 'customerDailyReport']);
-// Route::get('reports/customer/monthly/{customerId}/{month}/{year}', [ServiceEntryController::class, 'customerMonthlyReport']);
-// Route::get('reports/customer/yearly/{customerId}/{year}', [ServiceEntryController::class, 'customerYearlyReport']);
-// Route::get('reports/customer/unpaid/{customerId}', [ServiceEntryController::class, 'customerUnpaidBillsReport']);
+
+# Reports
+Route::middleware('auth:sanctum')->get('/report/daily-entries', [ReportController::class, 'dailyEntries']);
+Route::middleware('auth:sanctum')->get('/report/customer-wise', [ReportController::class, 'customerWise']);
+Route::middleware('auth:sanctum')->get('/report/pending-bills', [ReportController::class, 'pendingBills']);
+Route::middleware('auth:sanctum')->get('/report/pdf', [ReportController::class, 'exportPdf']);

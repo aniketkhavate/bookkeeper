@@ -12,6 +12,7 @@ class ServiceEntry extends Model
     protected $fillable = [
         'customer_id',
         'service_id',
+        'user_id',
         'rate',
         'quantity',
         'total_bill',
@@ -30,6 +31,11 @@ class ServiceEntry extends Model
 
     public function getServiceEntries(array $where = [])
     {
-        return ServiceEntry::with(['customer', 'service'])->where($where)->get();
+        return ServiceEntry::with(['customer:id,name,email,phone', 'service:id,name'])->where($where)->orderBy('id', 'desc')->get();
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

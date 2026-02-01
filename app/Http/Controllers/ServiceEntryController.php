@@ -21,14 +21,23 @@ class ServiceEntryController extends Controller
     {
         $request->validate([
             'id' => 'nullable',
-            'customer_id' => 'nullable|integer|min:0'
+            'customer_id' => 'nullable|integer|min:0',
+            'status' => 'nullable|in:pending,completed,cancelled'
         ]);
+
         $where = [];
+        $user = auth()->user();
+        if ($user->isEmployee()) {
+            $where['user_id'] = $user->id;
+        }
         if ($request->filled('id')) {
             $where['id'] = $request->id;
         }
         if ($request->filled('customer_id') && $request->customer_id != 0) {
             $where['customer_id'] = $request->customer_id;
+        }
+        if ($request->filled('status')) {
+            $where['status'] = $request->status;
         }
         $serviceEntries = $this->serviceEntryModel->getServiceEntries($where);
         return successResponse("Service entries fetched successfully.", $serviceEntries);
@@ -47,6 +56,7 @@ class ServiceEntryController extends Controller
             $serviceEntry = ServiceEntry::create([
                 'customer_id' => $request->customer_id,
                 'service_id' => $request->service_id,
+                'user_id' => auth()->id(),
                 'rate' => $request->rate,
                 'quantity' => $request->quantity,
                 'total_bill' => $totalBill,
@@ -106,14 +116,37 @@ class ServiceEntryController extends Controller
     public function getRawData()
     {
         try {
+            $user = auth()->user();
+
+            // Services are visible to everyone
             $services = Service::where('is_active', 1)->get();
-            $customers = Customer::where('is_active', 1)->get();
-            $serviceEntries = ServiceEntry::with(['customer', 'service'])->get();
+
+            // Customers visibility based on role
+            if ($user->isAdmin()) {
+                $customers = Customer::with('creator:id,name')->where('is_active', 1)->get();
+            } elseif ($user->isEmployee()) {
+                $customers = Customer::with('creator:id,name')->where('is_active', 1)
+                    ->where('created_by', $user->id)
+                    ->get();
+            } else {
+                return errorResponse("Access denied");
+            }
+
+            // Service entries visibility based on role
+            if ($user->isAdmin()) {
+                $serviceEntries = ServiceEntry::with(['customer:id,name', 'service:id,name'])->get();
+            } elseif ($user->isEmployee()) {
+                $serviceEntries = ServiceEntry::with(['customer:id,name', 'service:id,name'])
+                    ->where('user_id', $user->id) // entries assigned to employee
+                    ->get();
+            }
+
             $data = [
                 'customers' => $customers,
                 'services' => $services,
                 'serviceEntries' => $serviceEntries
             ];
+
             return successResponse("Customer & Service List.", $data);
         } catch (\Exception $e) {
             return errorResponse($e->getMessage());

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Enums\Role;
 
 class User extends Authenticatable
 {
@@ -46,11 +47,11 @@ class User extends Authenticatable
 
     public function isAdmin()
     {
-        return $this->role === 'admin';
+        return $this->role === Role::ADMIN;
     }
 
     public function isEmployee()
     {
-        return $this->role === 'employee';
+        return $this->role === Role::EMPLOYEE;
     }
 }
